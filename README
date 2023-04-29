@@ -1,0 +1,143 @@
+VÎRLAN Mihnea-Alexandru 311CB
+
+
+
+gcc -Wall -g trie.c main.c carte.c -o tema3
+
+                      = Tema 3 SD Biblioteca online =
+
+[output_example.txt] ........................................... example
+[output_example.txt - VALGRIND: PASSED] ........................ example
+
+[output1.txt] ........................................... passed  [05/135]
+[output1.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output2.txt] ........................................... passed  [05/135]
+[output2.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output3.txt] ........................................... passed  [05/135]
+[output3.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output4.txt] ........................................... passed  [05/135]
+[output4.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output5.txt] ........................................... passed  [05/135]
+[output5.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output6.txt] ........................................... passed  [05/135]
+[output6.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output7.txt] ........................................... passed  [05/135]
+[output7.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output8.txt] ........................................... passed  [05/135]
+[output8.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output9.txt] ........................................... passed  [05/135]
+[output9.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output10.txt] ........................................... passed  [05/135]
+[output10.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output11.txt] ........................................... passed  [05/135]
+[output11.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output12.txt] ........................................... passed  [05/135]
+[output12.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output13.txt] ........................................... passed  [05/135]
+[output13.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output14.txt] ........................................... passed  [05/135]
+[output14.txt - VALGRIND: PASSED] ........................ passed  [0,0/20]
+
+[output15.txt] ........................................... passed  [05/135]
+[output15.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output16.txt] ........................................... passed  [05/135]
+[output16.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output17.txt] ........................................... failed  [ 0/135]
+
+[output18.txt] ........................................... passed  [05/135]
+[output18.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output19.txt] ........................................... passed  [05/135]
+[output19.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output20.txt] ........................................... failed  [ 0/135]
+
+[output21.txt] ........................................... passed  [05/135]
+[output21.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output22.txt] ........................................... passed  [05/135]
+[output22.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output23.txt] ........................................... passed  [05/135]
+[output23.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output24.txt] ........................................... passed  [05/135]
+[output24.txt - VALGRIND: PASSED] ........................ passed  [1,0/20]
+
+[output25.txt] ........................................... passed  [05/135]
+[output25.txt - VALGRIND: FAILED] ........................ failed  [ 0/20]
+
+[output26.txt] ........................................... failed  [ 0/135]
+
+[output27.txt] ........................................... failed  [ 0/135]
+
+                                                           Total: [115/135]
+                                                           Bonus: [15,0/20,0]
+                                                           
+          	În primul rând, la rularea acestui checker, în loc să văd 0.5 puncte la teste VALGRIND trecute primesc pe ecran mesajul 
+          ”./checker.sh: line 62: printf: 0.5: invalid number”.
+          	Trecând peste acest detaliu aparent nesemnificativ, acest document prezintă aspectele generale ale temei. 
+          Voi descrie cum am gândit structura de arbore Trie și procedeele de inserare, căutare și ștergere.
+          	Căutând informații despre acest tip de arbore, am aflat de multe modalități de implementare, unele mai mult sau mai puțin
+          consumatoare de memorie. Punctul de plecare a fost site-ul https://people.ok.ubc.ca/ylucet/DS/CompressedTrie.html
+          unde, jucându-mă cu inserările, căutările și eliminările am decis să implementez un arbore Trie care, în loc să rețină caractere, va reține șiruri 
+          de caractere, acest lucru ducând la un consum mai mic de memorie. Ceea ce urmează să explic este o modalitate de implementare
+          concepută de mine, inspirat de acest site.
+          	Structura implementată conține:
+          - un vector cu 68 de legături (de tip pointer) către pozițiile caracterelor în alfabetul impus de problemă
+          - un șir de caractere
+          - adresa unei informații
+          	Mai întâi, am inițiat arborii T1 și T2 cu șirul ”\0” (rădăcinile)
+          
+          
+          	Inserarea
+          - este punctul cheie al problemei și are mai multe etape
+          1. Ne situăm la rădăcină
+          2. Dacă rădăcina nu are conexiune cu primul caracter al unui șir de caractere dat, acesta va fi inserat exact ca fiu al rădăcinii
+          3. Dacă avem totuși o legătură, parcurgem arborele comparând fiecare șir reținut de nod cu cheia pe care vrem să o inserăm. La finalul
+          comparației, eliberăm cheia de caracterele comune. În fapt, nu vom insera decât o parte din cheie, pentru că se consideră că deja am găsit un prefix.
+          Condiția de înaintare este să ne asigurăm că un nod are deja legătură cu primul caracter al noii chei. Cheia se va actualiza.
+          Dacă am ajuns la un nod ce conține un șir mai mic decât cheia rămasă, ne oprim, în semn că am găsit locul de inserare.
+          4. În acest moment, la nodul la care am ajuns sunt două situații:
+          a) cheia rămasă nu conține caractere comune cu șirul din nodul curent
+          În acest caz, adăugăm o nouă legătură.
+          b) cheia rămasă conține caractere comune cu șirul din nodul curent
+          În acest caz, spargem nodul în două, unul care conține caracterele comune și cel care conține caracterele necomune.
+          Inițial, nodul cu caracterele necomune trebuie să păstreze legăturile vechiului nod de dinainte de spargere. Apoi, din
+          nodul ce conține caracterele necomune introducem și o nouă legătură pentru cheie
+          Mai există situația în care vrem să introducem informațiile unei cărți, care este deja prefixul altor cărți. În acest caz, nu creăm
+          o legătură, ci adăugăm doar informațiile despre carte.
+          	
+          	Căutarea
+          - ideea comună în căutări este parcurgerea arborelui și actualizarea simultană a cheii, scoțând caracterele comune cu șirurile din noduri
+          - Dacă se dă prefixul unei cărți, se continuă parcurgerea până când ajung la celula care conține și zona de memorie destinată informației,
+          de unde extragem și afișăm titlul cărții
+          - Dacă se dă prefixul unui autor, se face aproximativ la fel ca la prefixul unei cărți, dar ne asigurăm că numele unui autor nu se repetă
+         	
+         	Ștergere
+         - ideea de bază este că nu putem să ștergem decât frunze
+         - mai întâi, copiez cheia într-un alt șir de caractere
+         - se face parcurgerea arborelui până când golim cheia
+         - dacă ajungem în situația în care informația (numai T1 conține zone de memorie cu informație) din frunză nu coincide cu ce vrem să ștergem,
+         lăsăm frunza în pace.
+         - în caz contrar o ștergem, iar șirul în care am păstrat copia nu va mai conține caracterele șterse din arbore
+         - se apelează din nou funcția cu noul șir
+         
+         	Tema conține și o structură TCarte în care rețin numele autorului și titlul cărții, alocate static și 2 variabile întregi: ratingul și numărul
+         de pagini. Sursa carte.c conține operații în care apar explicit căutări de cărți, împreună cu ștergerea unei cărți din arborele de căutare al unui 
+         autor. Sursa trie.c conține operațiile generale de inserare, căutare și ștergere.
